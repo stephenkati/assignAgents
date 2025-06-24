@@ -1,5 +1,5 @@
 ### 📄 Lead Assignment Script Documentation
-This Node.js script reads a phone number, fetches a matching lead ID via an API, and assigns that lead to a loan officer by updating its associated sector, branch, market, and collection officer details.
+This Node.js script reads a phone number, fetches a matching customer via an API, and assigns that customer to a loan officer by updating its associated sector, branch, market, and collection officer details.
 
 🔧 **Setup**
 1. **Dependencies**
@@ -8,57 +8,87 @@ Ensure the following packages are installed:
 npm install axios csv-parser fs
 ```
 2.** Environment Variables**
-Set your API base URL and authorization token directly in the script:
+Set your API base URL and authorization token in the `.env` file:
 
 ```
-const url = "https://your-api_url";   // Replace with your actual API base URL
-const Token = 'your_token_here';           // Replace with your valid Bearer token
+API_URL=https://your-api-url.com/
+API_TOKEN=your_token_here
+
+SECTOR=your_sector_id
+BRANCH=your_branch_id
+MARKETID=your_market_id
+BRANCHKEY=your_branch_key
 ```
 
 ⚙️** Functions Overview**
-1. **getLead(number)**
+1. **getcustomer(number)**
 
-Fetches a lead from the API using the provided phone number (number).
+Fetches a customer from the API using the provided phone number (number).
 
- `Endpoint: GET /v1/leads/upia?order=DESC&query=<number>`
+ `Endpoint: GET /v1/customers/upia?order=DESC&query=<number>`
 
-Returns: The lead ID if found.
-const leadId = await getLead('254712345678');
+Returns: The customer ID if found.
+```
+const customerId = await getCustomer('254712***678');
+```
 
-2. **assignAccountToAgent(number, LoId)**
+2. **updateCustomer(number, LoId)**
 
-Assigns the specified lead to a loan officer and updates sector, branch, market, and collection officer details.
+Assigns the specified customer to a loan officer and updates sector, branch, market, and collection officer details.
 
 Parameters:
 ```
-number – Phone number of the lead.
+number – Phone number of the customer.
 LoId – Loan Officer ID.
-PATCH Endpoint: /v1/leads/:leadId
+PATCH Endpoint: /v1/customers/:customerId
 ```
 
 Payload:
 ```
 {
-  "sectorId": "8",
-  "branchId": "branc",
-  "marketId": "market",
-  "loanOfficerId": "LoId",
-  "collectionOfficerId": "1111"
+  "assignedSectorId": process.env.SECTOR,
+  "assignedBranchId": process.env.BRANCH,
+  "assignedCentreId": process.env.MARKETID,
+  "assignedBranchKey": process.env.BRANCHKEY,
+  "_Staff_Association_Clients": [{
+    _index: 0,
+    op: "REPLACE",
+    Loan_Officer_Clients: LoId,
+
+  }]
 }
 ```
+
+3. **readCSV(filePath)**
+
+Reads a CSV file and extracts rows with number and loId columns.
+
+```
+254712***678,Lo_Id_1
+254712***678,Lo_Id_2
+```
+
+4. **fetchContent(filePath)**
+
+Reads a CSV and processes each row to update customer assignments.
+
+```
+fetchContent('test.csv');
+```
+
 📦 **Sample Execution**
 ```
-assignAccountToAgent('254712345678', 'LO123456');
+node assignAgents
 ```
 🐛 **Error Handling**
-- Errors during fetching or updating are logged to the console.
-- Failures will include API error messages or status codes for easier debugging.
+- Invalid or missing rows are skipped with a warning.
+- API failures (fetching or updating) are logged with detailed error messages.
 
 📌 **Notes**
-- You must have valid credentials and access rights to perform GET and PATCH operations on the API.
-- The sector, branch, and market IDs are currently hardcoded—customize these as needed for your use case.
+- All credentials and location settings are stored in .env for security and flexibility.  
+- If a customer is not found, or lacks a valid ID, that record is skipped.
 
 📁 **Future Enhancements**
-- Read phone numbers from a CSV file and loop through them.
-- Validate phone number format before making the API call.
-- Extract constants like sector, branch, and collection officer to a config file or .env.
+- ✅ Assign customers in bulk from a CSV file (already implemented).
+- 🔲 Add support for exporting results to a success/failure report.
+- 🔲 Validate phone number and loan officer ID format before API call.
