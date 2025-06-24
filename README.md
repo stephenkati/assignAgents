@@ -34,7 +34,7 @@ const customerId = await getCustomer('254712***678');
 
 2. **updateCustomer(number, LoId)**
 
-Assigns the specified customer to a loan officer and updates sector, branch, market, and collection officer details.
+Assigns the specified customer to a loan officer and updates sector, branch, market, and loan officer details.
 
 Parameters:
 ```
@@ -54,7 +54,6 @@ Payload:
     _index: 0,
     op: "REPLACE",
     Loan_Officer_Clients: LoId,
-
   }]
 }
 ```
