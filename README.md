@@ -1,5 +1,5 @@
 ### 📄 Lead Assignment Script Documentation
-This Node.js script reads a phone number, fetches a matching customer via an API, and assigns that customer to a loan officer by updating its associated sector, branch, market, and collection officer details.
+This Node.js script reads a phone number, fetches a matching customer via an API, and assigns that customer to a loan officer by updating its associated sector, branch, market, and loan officer details.
 
 🔧 **Setup**
 1. **Dependencies**
