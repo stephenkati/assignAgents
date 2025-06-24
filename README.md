@@ -91,3 +91,5 @@ node assignAgents
 - ✅ Assign customers in bulk from a CSV file (already implemented).
 - 🔲 Add support for exporting results to a success/failure report.
 - 🔲 Validate phone number and loan officer ID format before API call.
+
+**[License](./LICENSE)**
